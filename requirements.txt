@@ -1,0 +1,16 @@
+# AI Email Routing Framework - Dependencies
+# Optimized for Streamlit Cloud deployment
+
+# Core
+anthropic>=0.18.0
+python-dotenv>=1.0.0
+
+# Integrations
+pyairtable>=2.0.0
+
+# Dashboard
+streamlit>=1.32.0
+plotly>=5.18.0
+
+# Note: Streamlit Cloud auto-detects Python version
+# Secrets should be added via Streamlit Cloud dashboard, not .env

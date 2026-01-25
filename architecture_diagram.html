@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Email Routing Framework - Architecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 40px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #a0a0a0;
+        }
+
+        .architecture {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .layer {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .layer-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .layer-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .layer-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .layer-subtitle {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .components {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .component {
+            flex: 1;
+            min-width: 200px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .component-current {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .component-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .component-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .component-role {
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-current {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-left: auto;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .alternatives {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 12px;
+            margin-top: 4px;
+        }
+
+        .alternatives-label {
+            font-size: 0.7rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .alt-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .alt-item {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #aaa;
+        }
+
+        /* Layer-specific colors */
+        .layer-presentation .layer-icon { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .layer-orchestration .layer-icon { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .layer-ai .layer-icon { background: linear-gradient(135deg, #ec4899, #be185d); }
+        .layer-approval .layer-icon { background: linear-gradient(135deg, #10b981, #059669); }
+        .layer-data .layer-icon { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+
+        .layer-presentation .component-logo { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .layer-orchestration .component-logo { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .layer-ai .component-logo { background: linear-gradient(135deg, #ec4899, #be185d); }
+        .layer-approval .component-logo { background: linear-gradient(135deg, #10b981, #059669); }
+        .layer-data .component-logo { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+
+        .flow-arrow {
+            display: flex;
+            justify-content: center;
+            color: #444;
+            font-size: 1.5rem;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-text {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .key-message {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            padding: 20px 30px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .key-message p {
+            font-size: 1.1rem;
+            color: #ccc;
+        }
+
+        .key-message strong {
+            color: #667eea;
+        }
+
+        .swap-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.7rem;
+            color: #10b981;
+            margin-left: 8px;
+        }
+
+        .swap-indicator::before {
+            content: "⟳";
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+                padding: 20px;
+            }
+
+            .layer {
+                background: #f8f9fa;
+                border: 1px solid #ddd;
+            }
+
+            .component {
+                background: white;
+                border: 1px solid #eee;
+            }
+
+            .header h1 {
+                background: none;
+                -webkit-text-fill-color: #333;
+                color: #333;
+            }
+
+            .alt-item {
+                background: #eee;
+                color: #666;
+            }
+        }
+
+        @page {
+            size: A4 landscape;
+            margin: 1cm;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AI Email Routing Framework</h1>
+            <p>Modular, Tool-Agnostic Architecture for Intelligent Workflow Automation</p>
+        </div>
+
+        <div class="architecture">
+            <!-- Presentation Layer -->
+            <div class="layer layer-presentation">
+                <div class="layer-header">
+                    <div class="layer-icon">🖥️</div>
+                    <div>
+                        <div class="layer-title">Presentation Layer</div>
+                        <div class="layer-subtitle">User interface for triggering pipelines and viewing results</div>
+                    </div>
+                </div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-current">
+                            <div class="component-logo">St</div>
+                            <div>
+                                <div class="component-name">Streamlit</div>
+                                <div class="component-role">Dashboard UI</div>
+                            </div>
+                            <span class="badge-current">Current</span>
+                        </div>
+                        <div class="alternatives">
+                            <div class="alternatives-label">Swap Options <span class="swap-indicator">Easy</span></div>
+                            <div class="alt-list">
+                                <span class="alt-item">Gradio</span>
+                                <span class="alt-item">React + FastAPI</span>
+                                <span class="alt-item">Retool</span>
+                                <span class="alt-item">Slack Bot</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">↓</div>
+
+            <!-- Orchestration Layer -->
+            <div class="layer layer-orchestration">
+                <div class="layer-header">
+                    <div class="layer-icon">⚙️</div>
+                    <div>
+                        <div class="layer-title">Orchestration Layer</div>
+                        <div class="layer-subtitle">Coordinates workflow, handles errors, manages state</div>
+                    </div>
+                </div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-current">
+                            <div class="component-logo">Py</div>
+                            <div>
+                                <div class="component-name">Python Pipeline</div>
+                                <div class="component-role">Workflow Engine</div>
+                            </div>
+                            <span class="badge-current">Current</span>
+                        </div>
+                        <div class="alternatives">
+                            <div class="alternatives-label">Swap Options <span class="swap-indicator">Medium</span></div>
+                            <div class="alt-list">
+                                <span class="alt-item">Apache Airflow</span>
+                                <span class="alt-item">Prefect</span>
+                                <span class="alt-item">Temporal</span>
+                                <span class="alt-item">AWS Step Functions</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">↓</div>
+
+            <!-- AI Layer -->
+            <div class="layer layer-ai">
+                <div class="layer-header">
+                    <div class="layer-icon">🧠</div>
+                    <div>
+                        <div class="layer-title">AI / LLM Layer</div>
+                        <div class="layer-subtitle">Classification intelligence and content generation</div>
+                    </div>
+                </div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-current">
+                            <div class="component-logo">C</div>
+                            <div>
+                                <div class="component-name">Claude (Anthropic)</div>
+                                <div class="component-role">Classification</div>
+                            </div>
+                            <span class="badge-current">Current</span>
+                        </div>
+                        <div class="alternatives">
+                            <div class="alternatives-label">Swap Options <span class="swap-indicator">Easy</span></div>
+                            <div class="alt-list">
+                                <span class="alt-item">GPT-5 (OpenAI)</span>
+                                <span class="alt-item">Gemini (Google)</span>
+                                <span class="alt-item">Llama (Self-hosted)</span>
+                                <span class="alt-item">AWS Bedrock</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component">
+                        <div class="component-current">
+                            <div class="component-logo">C</div>
+                            <div>
+                                <div class="component-name">Claude (Anthropic)</div>
+                                <div class="component-role">Reply Generation</div>
+                            </div>
+                            <span class="badge-current">Current</span>
+                        </div>
+                        <div class="alternatives">
+                            <div class="alternatives-label">Swap Options <span class="swap-indicator">Easy</span></div>
+                            <div class="alt-list">
+                                <span class="alt-item">GPT-5 (OpenAI)</span>
+                                <span class="alt-item">Mistral</span>
+                                <span class="alt-item">Fine-tuned Model</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">↓</div>
+
+            <!-- Approval Layer -->
+            <div class="layer layer-approval">
+                <div class="layer-header">
+                    <div class="layer-icon">✅</div>
+                    <div>
+                        <div class="layer-title">Human-in-the-Loop Layer</div>
+                        <div class="layer-subtitle">Review, edit, and approve AI-generated content</div>
+                    </div>
+                </div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-current">
+                            <div class="component-logo">At</div>
+                            <div>
+                                <div class="component-name">Airtable</div>
+                                <div class="component-role">Approval Queue</div>
+                            </div>
+                            <span class="badge-current">Current</span>
+                        </div>
+                        <div class="alternatives">
+                            <div class="alternatives-label">Swap Options <span class="swap-indicator">Easy</span></div>
+                            <div class="alt-list">
+                                <span class="alt-item">Notion</span>
+                                <span class="alt-item">Google Sheets</span>
+                                <span class="alt-item">Slack (Buttons)</span>
+                                <span class="alt-item">Jira</span>
+                                <span class="alt-item">Custom App</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">↓</div>
+
+            <!-- Data Layer -->
+            <div class="layer layer-data">
+                <div class="layer-header">
+                    <div class="layer-icon">💾</div>
+                    <div>
+                        <div class="layer-title">Data Layer</div>
+                        <div class="layer-subtitle">Storage, persistence, and audit trails</div>
+                    </div>
+                </div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-current">
+                            <div class="component-logo">{ }</div>
+                            <div>
+                                <div class="component-name">JSON Files</div>
+                                <div class="component-role">Local Storage</div>
+                            </div>
+                            <span class="badge-current">Current</span>
+                        </div>
+                        <div class="alternatives">
+                            <div class="alternatives-label">Swap Options <span class="swap-indicator">Easy</span></div>
+                            <div class="alt-list">
+                                <span class="alt-item">PostgreSQL</span>
+                                <span class="alt-item">MongoDB</span>
+                                <span class="alt-item">Supabase</span>
+                                <span class="alt-item">S3 + Athena</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="key-message">
+            <p>"The investment is in the <strong>pattern</strong>, not the specific tools."</p>
+        </div>
+
+        <div class="footer">
+            <p class="footer-text">AI Workflow Automation Framework • Modular • Extensible • Future-Proof • <strong>v2026.1</strong></p>
+        </div>
+    </div>
+</body>
+</html>
