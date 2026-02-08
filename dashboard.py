@@ -9,6 +9,7 @@ import json
 import time
 import os
 import random
+import base64
 from datetime import datetime
 import plotly.express as px
 import plotly.graph_objects as go
@@ -389,19 +390,8 @@ def render_data_source_section():
 
     with col2:
         st.markdown("#### Option 2: Upload Your Own")
-        uploaded = st.file_uploader("Upload JSON file", type=["json"], label_visibility="collapsed")
-        if uploaded:
-            try:
-                data = json.load(uploaded)
-                if isinstance(data, list):
-                    emails = data
-                elif isinstance(data, dict) and "emails" in data:
-                    emails = data["emails"]
-                st.success(f"✅ Uploaded {len(emails)} emails")
-                st.session_state.data_source = "upload"
-                st.session_state.loaded_emails = emails
-            except Exception as e:
-                st.error(f"Error parsing file: {e}")
+        st.file_uploader("Upload JSON file", type=["json"], label_visibility="collapsed", disabled=True)
+        st.caption("📋 Custom upload available in production deployment")
 
     return st.session_state.get('loaded_emails', [])
 
@@ -499,6 +489,18 @@ def main():
             if st.button("🗑️ Clear Results", use_container_width=True):
                 st.session_state.processed_emails = []
                 st.rerun()
+
+        # Autorithm branding
+        st.markdown("---")
+        with open("autorithm_White-Main.jpg", "rb") as img_file:
+            img_base64 = base64.b64encode(img_file.read()).decode()
+        st.markdown(
+            f'<div style="display: flex; align-items: center; justify-content: center; gap: 6px;">'
+            f'<span style="font-size: 11px; color: #9ca3af;">Developed by</span>'
+            f'<img src="data:image/jpeg;base64,{img_base64}" alt="Autorithm" style="height: 16px;">'
+            f'</div>',
+            unsafe_allow_html=True
+        )
 
     # Create tabs
     results_count = len(st.session_state.processed_emails)
