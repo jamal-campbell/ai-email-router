@@ -72,7 +72,7 @@ python generate_email_corpus.py -n 300 -o email_corpus.json -s 42
 streamlit run dashboard.py
 ```
 
-Opens at http://localhost:8501 with:
+Opens at localhost with:
 - Visual classification pipeline
 - Real-time progress tracking
 - Category distribution charts
