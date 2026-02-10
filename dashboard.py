@@ -492,15 +492,27 @@ def main():
 
         # Autorithm branding
         st.markdown("---")
-        with open("autorithm_White-Main.jpg", "rb") as img_file:
-            img_base64 = base64.b64encode(img_file.read()).decode()
-        st.markdown(
-            f'<div style="display: flex; align-items: center; justify-content: center; gap: 6px;">'
-            f'<span style="font-size: 11px; color: #9ca3af;">Developed by</span>'
-            f'<img src="data:image/jpeg;base64,{img_base64}" alt="Autorithm" style="height: 16px;">'
-            f'</div>',
-            unsafe_allow_html=True
-        )
+        logo_base64 = None
+        # Try local file first (development), then Streamlit secrets (production)
+        if os.path.exists("autorithm_White-Main.jpg"):
+            with open("autorithm_White-Main.jpg", "rb") as img_file:
+                logo_base64 = base64.b64encode(img_file.read()).decode()
+        elif hasattr(st, 'secrets') and 'LOGO_BASE64' in st.secrets:
+            logo_base64 = st.secrets['LOGO_BASE64']
+
+        if logo_base64:
+            st.markdown(
+                f'<div style="display: flex; align-items: center; justify-content: center; gap: 6px;">'
+                f'<span style="font-size: 11px; color: #9ca3af;">Developed by</span>'
+                f'<img src="data:image/jpeg;base64,{logo_base64}" alt="Autorithm" style="height: 16px;">'
+                f'</div>',
+                unsafe_allow_html=True
+            )
+        else:
+            st.markdown(
+                '<div style="text-align: center; font-size: 11px; color: #9ca3af;">Developed by Autorithm</div>',
+                unsafe_allow_html=True
+            )
 
     # Create tabs
     results_count = len(st.session_state.processed_emails)

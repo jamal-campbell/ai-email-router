@@ -43,6 +43,11 @@ output/
 *.swo
 *~
 
+# Branding/Logo (keep local, load via secrets in production)
+*.jpg
+*.png
+!*.example.png
+
 # OS
 .DS_Store
 .DS_Store?
