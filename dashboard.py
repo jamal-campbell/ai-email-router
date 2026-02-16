@@ -501,8 +501,16 @@ def main():
             logo_bytes = base64.b64decode(st.secrets['LOGO_BASE64'])
 
         if logo_bytes:
-            st.caption("Developed by")
-            st.image(logo_bytes, width=120)
+            col1, col2 = st.columns([1, 2])
+            with col1:
+                st.markdown(
+                    '<div style="display: flex; align-items: center; height: 100%; padding-top: 8px;">'
+                    '<span style="font-size: 11px; color: #9ca3af; white-space: nowrap;">Developed by</span>'
+                    '</div>',
+                    unsafe_allow_html=True
+                )
+            with col2:
+                st.image(logo_bytes, width=120)
         else:
             st.markdown(
                 '<div style="text-align: center; font-size: 11px; color: #9ca3af;">Developed by Autorithm</div>',
