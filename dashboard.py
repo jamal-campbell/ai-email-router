@@ -492,22 +492,17 @@ def main():
 
         # Autorithm branding
         st.markdown("---")
-        logo_base64 = None
+        logo_bytes = None
         # Try local file first (development), then Streamlit secrets (production)
         if os.path.exists("autorithm_White-Main.jpg"):
             with open("autorithm_White-Main.jpg", "rb") as img_file:
-                logo_base64 = base64.b64encode(img_file.read()).decode()
+                logo_bytes = img_file.read()
         elif hasattr(st, 'secrets') and 'LOGO_BASE64' in st.secrets:
-            logo_base64 = st.secrets['LOGO_BASE64']
+            logo_bytes = base64.b64decode(st.secrets['LOGO_BASE64'])
 
-        if logo_base64:
-            st.markdown(
-                f'<div style="display: flex; align-items: center; justify-content: center; gap: 6px;">'
-                f'<span style="font-size: 11px; color: #9ca3af;">Developed by</span>'
-                f'<img src="data:image/jpeg;base64,{logo_base64}" alt="Autorithm" style="height: 16px;">'
-                f'</div>',
-                unsafe_allow_html=True
-            )
+        if logo_bytes:
+            st.caption("Developed by")
+            st.image(logo_bytes, width=120)
         else:
             st.markdown(
                 '<div style="text-align: center; font-size: 11px; color: #9ca3af;">Developed by Autorithm</div>',
