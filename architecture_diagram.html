@@ -200,6 +200,41 @@
             color: #666;
         }
 
+        .branding {
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .branding-label {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .branding-link {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+        }
+
+        .branding-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #10b981;
+        }
+
+        .branding-link:hover .branding-name {
+            color: #34d399;
+        }
+
+        .branding-arrow {
+            color: #666;
+            font-size: 0.75rem;
+        }
+
         .key-message {
             background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
             border: 1px solid rgba(102, 126, 234, 0.3);
@@ -469,6 +504,13 @@
 
         <div class="footer">
             <p class="footer-text">AI Workflow Automation Framework • Modular • Extensible • Future-Proof • <strong>v2026.1</strong></p>
+            <div class="branding">
+                <span class="branding-label">Developed by</span>
+                <a href="https://autorithm.com" target="_blank" rel="noopener noreferrer" class="branding-link">
+                    <span class="branding-name">Autorithm</span>
+                    <span class="branding-arrow">»</span>
+                </a>
+            </div>
         </div>
     </div>
 </body>
