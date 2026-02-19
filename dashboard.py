@@ -492,22 +492,18 @@ def main():
 
         # Autorithm branding
         st.markdown("---")
-        logo_bytes = None
-        # Try local file first (development), then Streamlit secrets (production)
-        if os.path.exists("autorithm_White-Main.jpg"):
-            with open("autorithm_White-Main.jpg", "rb") as img_file:
-                logo_bytes = img_file.read()
-        elif hasattr(st, 'secrets') and 'LOGO_BASE64' in st.secrets:
-            logo_bytes = base64.b64decode(st.secrets['LOGO_BASE64'])
-
-        if logo_bytes:
-            st.caption("Developed by")
-            st.image(logo_bytes, width=120)
-        else:
-            st.markdown(
-                '<div style="text-align: center; font-size: 11px; color: #9ca3af;">Developed by Autorithm</div>',
-                unsafe_allow_html=True
-            )
+        st.markdown(
+            '''
+            <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                <span style="font-size: 12px; color: #9ca3af;">Developed by</span>
+                <a href="https://autorithm.com" target="_blank">
+                    <img src="https://raw.githubusercontent.com/jamal-campbell/ai-tax-assistant/master/frontend/public/assets/autorithm_White-Main.jpg"
+                         alt="Autorithm" style="height: 16px; border-radius: 2px;">
+                </a>
+            </div>
+            ''',
+            unsafe_allow_html=True
+        )
 
     # Create tabs
     results_count = len(st.session_state.processed_emails)
